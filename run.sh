@@ -42,9 +42,9 @@ root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(1)'
 
 # Comparison with McLimit for full plot
 root -l -b <<EOF
-.L ComparisonWithMcLimit_SgluonFullStat.C
-ComparisonWithMcLimit_SgluonFullStat("results/SgluonFullStat.txt")
-makeExclusionPlot("results/SgluonFullStat.txt","results/SgluonFullStat.txt")
+.L ComparisonWithMcLimit_SgluonPartialStat.C
+ComparisonWithMcLimit_SgluonPartialStat("results/SgluonPartialStat.txt")
+makeExclusionPlot("results/SgluonPartialStat.txt")
 EOF
 
 # Multithread -> to be written

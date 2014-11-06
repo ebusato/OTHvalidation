@@ -37,6 +37,7 @@ mkdir dat
 root -l -b -q SingleChannelNoUncertainties.C
 root -l -b -q MultipleChannelsNoUncertainties_OTHVsAsymptotic.C
 root -l -b -q MultipleChannelsNoUncertainties_NoChannelsVsLumi.C
+root -l -b -q SingleChannelStatUncertNegativeBinomial.C
 root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(0)'
 root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(1)'
 
@@ -44,11 +45,11 @@ root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(1)'
 root -l -b <<EOF
 .L ComparisonWithMcLimit_SgluonPartialStat.C
 ComparisonWithMcLimit_SgluonPartialStat("results/SgluonPartialStat.txt")
-makeExclusionPlot("results/SgluonPartialStat.txt")
+makeExclusionPlot("results/SgluonPartialStat.txt","datComparisonWithMcLimit_SgluonPartialStat/McLimitsResultsFromLoic.txt")
 EOF
 
 # Multithread -> to be written
 
-# Merge all results into a single file 
+# Merge all results into a single file
 rm -f results/merged.pdf
 gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=results/merged.pdf results/*.pdf

@@ -24,9 +24,6 @@ Result* runLimit(const int type,
   oth.addChannel("ch2",file2);
   oth.addChannel("ch3",file3);
   
-  oth.setCombinationType(OTH::Channel::additive);
-  //oth.printSamples();
-
   double cls;
   double limit=0;
   if(type==expM2)
@@ -380,16 +377,18 @@ void makeExclusionPlot(const std::string file1, const std::string file2="")
 {
   gSystem->Load("ExclusionPlot_C");
 
-  LimitBrasilPlot limitBrasil1("exclPlotMcLimit",TheoXsec::SgluonPartialStat);
+  gStyle->SetOptTitle(0);
+
+  LimitBrasilPlot limitBrasil1("McLimit",TheoXsec::SgluonPartialStat);
   limitBrasil1.readFile(file1);
-  limitBrasil1.makePlot();
-  limitBrasil1.plotTheoGraph(true);
+  limitBrasil1.makePlot(false,1e-2,4);
+  //limitBrasil1.plotTheoGraph(true);
 
   if(file2!="") {
-    LimitBrasilPlot limitBrasil2("exclPlotOTH",TheoXsec::SgluonPartialStat);
+    LimitBrasilPlot limitBrasil2("OpTHyLiC",TheoXsec::SgluonPartialStat);
     limitBrasil2.readFile(file2);
-    limitBrasil2.makePlot(true);
-    limitBrasil2.plotTheoGraph(true);
+    limitBrasil2.makePlot(true,1e-2,4);
+    //limitBrasil2.plotTheoGraph(true);
   }
 
   gPad->SaveAs("results/ExclusionPlot_Sgluon.pdf");

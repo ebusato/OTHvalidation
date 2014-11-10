@@ -379,6 +379,8 @@ void makeExclusionPlot(const std::string file1, const std::string file2="")
 
   gStyle->SetOptTitle(0);
 
+  TCanvas* c = new TCanvas("c","c",1200,800);
+
   LimitBrasilPlot limitBrasil1("McLimit",TheoXsec::SgluonPartialStat);
   limitBrasil1.readFile(file1);
   limitBrasil1.makePlot(false,1e-2,4);
@@ -392,4 +394,5 @@ void makeExclusionPlot(const std::string file1, const std::string file2="")
   }
 
   gPad->SaveAs("results/ExclusionPlot_Sgluon.pdf");
+  gPad->SaveAs("results/ExclusionPlot_Sgluon.png");
 }

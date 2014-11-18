@@ -58,8 +58,8 @@ void ComparisonWithMcLimit_SgluonPartialStat(TString outputFileName)
   TStopwatch w;
   w.Start();
 
-  const int interpExtrap=OpTHyLiC::mclimit;
-  const int statConstraint=OpTHyLiC::normal;
+  //const int interpExtrap=OpTHyLiC::mclimit;
+  //const int statConstraint=OpTHyLiC::normal;
   const int nbExp=5e4;
 
   // Expected minus 2 sigma

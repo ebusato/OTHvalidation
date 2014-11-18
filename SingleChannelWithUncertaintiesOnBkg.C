@@ -49,36 +49,49 @@ void createASCIIFile(const bool withUncertainties, const TString filename, const
   myfile.close();
 }
 
-double computeObservedBayesianMCMC(const std::string& file) 
+double computeObservedBayesianMCMC(const std::string& file, const int interpExtrap, const int statConstraint) 
 {
-  //model::Model model(model::Model::normal,4); // poly/expo
-  model::Model model(model::Model::normal,1); // piece-wise expo
-  //model::Model model(model::Model::normal,0); // piece-wise linear
+  // interp/extrap : 0 -> linear, 1 -> expo, 4 -> poly/expo
+  model::Model model(statConstraint,interpExtrap);
   model::Channel* ch = model.addChannel("ch",file);
   model.makeModel();
   RooWorkspace* w = model.getWorkspace();
   BayesianMCMC bay(w);
   bay.setNumIters(1e7);
+  //bay.setNumIters(1e6);
   double limit = bay.computeLimit();
   bay.printInterval();
   return limit;
 }
 
-void SingleChannelWithUncertaintiesOnBkg(bool withUncertainties=true)
+void SingleChannelWithUncertaintiesOnBkg(bool withUncertainties=true, const int config=1, const int finallumi=8)
 {
+  /////////////////////////////////////////////////////////////////////////////////////
+  // Meaning of config parameter:
+  //   - config=1: exponential (interp/extrap) + normal (stat constraint)
+  //   - config=2: exponential (interp/extrap) + log-normal (stat constraint)
+  //   - config=3: linear (interp/extrap) + normal (stat constraint)
+  //   - config=4: linear (interp/extrap) + log-normal (stat constraint)
+  //   - config=5: poly+expo (interp/extrap) + normal (stat constraint)
+  //   - config=6: poly+expo (interp/extrap) + log-normal (stat constraint)
+  /////////////////////////////////////////////////////////////////////////////////////
+
   setStyle();
   gSystem->Load("OpTHyLiC_C");
   gSystem->Load("Models/Model_C");
   gSystem->Load("BayesianMCMC/BayesianMCMC_C");
 
   float lumii = 1;
-  float lumif = 8;
+  float lumif = finallumi;
 
   int nbins = lumif-lumii+1;
   TH1F* h_LimitOTHVsLumi = new TH1F("h_LimitOTHVsLumi","h_LimitOTHVsLumi",nbins,lumii-0.5,lumif+0.5);
   TH1F* h_LimitBayesianVsLumi = new TH1F("h_LimitBayesianVsLumi","h_LimitBayesianVsLumi",nbins,lumii-0.5,lumif+0.5);
   setHistoStyle(h_LimitOTHVsLumi,4,kBlack,"#mu_{up}","L");
   setHistoStyle(h_LimitBayesianVsLumi,5,kBlue,"#mu_{up}","L");
+
+  int Nexp=1e6;
+  //int Nexp=1e4;
 
   for(float lumi=lumii; lumi<lumif; lumi+=1) {
     cout << endl << "-----------------------------------------------" << endl;
@@ -93,8 +106,36 @@ void SingleChannelWithUncertaintiesOnBkg(bool withUncertainties=true)
     float Nsig2=5*lumi;
     float Nobs2=90*lumi;
     createASCIIFile(withUncertainties,fileName,Nbkg2,Nsig2,Nobs2);
-    double limit_OTH = computeObserved(1e6,OpTHyLiC::expo,OpTHyLiC::normal,fileName.Data());
-    double limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data());
+    double limit_OTH=0;
+    double limit_bayesianMCMC=0;
+    if(1==config) {
+      limit_OTH = computeObserved(Nexp,OpTHyLiC::expo,OpTHyLiC::normal,fileName.Data());
+      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),1,model::Model::normal);
+    }
+    else if(2==config) {
+      limit_OTH = computeObserved(Nexp,OpTHyLiC::expo,OpTHyLiC::logN,fileName.Data());
+      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),1,model::Model::logN);
+    }
+    else if(3==config) {
+      limit_OTH = computeObserved(Nexp,OpTHyLiC::linear,OpTHyLiC::normal,fileName.Data());
+      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),0,model::Model::normal);
+    }
+    else if(4==config) {
+      limit_OTH = computeObserved(Nexp,OpTHyLiC::linear,OpTHyLiC::logN,fileName.Data());
+      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),0,model::Model::logN);
+    }
+    else if(5==config) {
+      limit_OTH = computeObserved(Nexp,OpTHyLiC::polyexpo,OpTHyLiC::normal,fileName.Data());
+      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),4,model::Model::normal);
+    }
+    else if(6==config) {
+      limit_OTH = computeObserved(Nexp,OpTHyLiC::polyexpo,OpTHyLiC::logN,fileName.Data());
+      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),4,model::Model::logN);
+    }
+    else {
+      cout << "ERROR! config unknown" << endl;
+      return;
+    }
     
     h_LimitOTHVsLumi->Fill(lumi,limit_OTH);
     h_LimitBayesianVsLumi->Fill(lumi,limit_bayesianMCMC);
@@ -129,10 +170,29 @@ void SingleChannelWithUncertaintiesOnBkg(bool withUncertainties=true)
   hratio->GetYaxis()->SetRangeUser(.95,1.05);
   hratio->Draw("p");
   if(withUncertainties) {
+    TString suffix("");
+    if(1==config) {
+      suffix="expo-normal";
+    }
+    else if(2==config) {
+      suffix="expo-logN";
+    }
+    else if(3==config) {
+      suffix="linear-normal";
+    }
+    else if(4==config) {
+      suffix="linear-logN";
+    }
+    else if(5==config) {
+      suffix="polyexpo-normal";
+    }
+    else if(6==config) {
+      suffix="polyexpo-logN";
+    }
     system("rm -f results/SingleChannelWithUncertaintiesOnBkg.*");
-    c->SaveAs("results/SingleChannelWithUncertaintiesOnBkg.png");
-    c->SaveAs("results/SingleChannelWithUncertaintiesOnBkg.C");
-    c->SaveAs("results/SingleChannelWithUncertaintiesOnBkg.pdf");
+    c->SaveAs(Form("results/SingleChannelWithUncertaintiesOnBkg_%s.png",suffix.Data()));
+    c->SaveAs(Form("results/SingleChannelWithUncertaintiesOnBkg_%s.C",suffix.Data()));
+    c->SaveAs(Form("results/SingleChannelWithUncertaintiesOnBkg_%s.pdf",suffix.Data()));
   }
   else {
     system("rm -f results/SingleChannelForComparisonWithUncertaintiesOnBkg.*");

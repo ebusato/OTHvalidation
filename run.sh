@@ -39,9 +39,9 @@ root -l -b -q MultipleChannelsNoUncertainties_OTHVsAsymptotic.C
 root -l -b -q MultipleChannelsNoUncertainties_NoChannelsVsLumi.C
 root -l -b -q SingleChannelStatUncertNegativeBinomial.C
 root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(0)'
-root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(1,1)'
-root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(1,4)'
-root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(1,6)'
+root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(1,6,8,1e6,1e7)'
+root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(1,1,8,1e6,1e7)'
+root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(1,4,8,1e6,1e7)'
 
 # Comparison with McLimit for full plot
 root -l -b <<EOF

@@ -7,49 +7,49 @@
 #include "AtlasUtils.C"
 #include "Utils.C"
 
-void createASCIIFile(const bool withUncertainties, const TString filename, const float Nbkg2, const float Nsig2, const float Nobs2)
+void createASCIIFile(const bool withUncertainties, const TString filename, const float Nbkg2, const float Nsig2, const float Nobs2, const float L)
 {
   ofstream myfile;
   myfile.open (filename);
 
-  myfile << "+bg Bkg1 " << Nbkg2/4.;
+  myfile << "+bg Bkg1 " << Nbkg2*L/4.;
   if(withUncertainties) {
-    myfile << " 7.\n";
+    myfile << " " << 7 << "\n";
     myfile << ".syst Syst1 0.1 -0.3" << "\n";
     myfile << ".syst Syst2 0.3 -0.2" << "\n";
   }
   else myfile << "\n";
-  myfile << "+bg Bkg2 " << Nbkg2/4;
+  myfile << "+bg Bkg2 " << Nbkg2*L/4;
   if(withUncertainties) {
-    myfile << " 12\n";
+    myfile << " " << 12 << "\n";
     myfile << ".syst Syst1 0.2 -0.05" << "\n";
     myfile << ".syst Syst3 -0.06 0.15" << "\n";
   }
   else 
     myfile << "\n";
-  myfile << "+bg Bkg3 " << Nbkg2/3.;
+  myfile << "+bg Bkg3 " << Nbkg2*L/3.;
   if(withUncertainties) {
-    myfile << " 3.5\n";
+    myfile << " " << 3.5 << "\n";
     myfile << ".syst Syst2 -0.1 0.3" << "\n";
     myfile << ".syst Syst3 0.15 -0.15" << "\n";
     myfile << ".syst Syst4 -0.6 0.6" << "\n";
   }
   else 
     myfile << "\n";
-  myfile << "+bg Bkg4 " << Nbkg2/6.;
+  myfile << "+bg Bkg4 " << Nbkg2*L/6.;
   if(withUncertainties) {
-    myfile << " 5\n";
+    myfile << " " << 5 << "\n";
     myfile << ".syst Syst5 -0.3 0.25" << "\n";
   }
   else 
     myfile << "\n";
-  myfile << "+sig Sig " << Nsig2 <<  " \n";
-  myfile << "+data " << Nobs2 << "\n";
+  myfile << "+sig Sig " << Nsig2*L <<  " \n";
+  myfile << "+data " << Nobs2*L << "\n";
   
   myfile.close();
 }
 
-double computeObservedBayesianMCMC(const std::string& file, const int interpExtrap, const int statConstraint) 
+double computeObservedBayesianMCMC(const std::string& file, const int interpExtrap, const int statConstraint, const int Niter) 
 {
   // interp/extrap : 0 -> linear, 1 -> expo, 4 -> poly/expo
   model::Model model(statConstraint,interpExtrap);
@@ -57,14 +57,13 @@ double computeObservedBayesianMCMC(const std::string& file, const int interpExtr
   model.makeModel();
   RooWorkspace* w = model.getWorkspace();
   BayesianMCMC bay(w);
-  bay.setNumIters(1e7);
-  //bay.setNumIters(1e6);
+  bay.setNumIters(Niter);
   double limit = bay.computeLimit();
   bay.printInterval();
   return limit;
 }
 
-void SingleChannelWithUncertaintiesOnBkg(bool withUncertainties=true, const int config=1, const int finallumi=8)
+void SingleChannelWithUncertaintiesOnBkg(bool withUncertainties=true, const int config=1, const int finallumi=8, const int Nexp=1e6, const int Niter=1e7)
 {
   /////////////////////////////////////////////////////////////////////////////////////
   // Meaning of config parameter:
@@ -90,9 +89,6 @@ void SingleChannelWithUncertaintiesOnBkg(bool withUncertainties=true, const int 
   setHistoStyle(h_LimitOTHVsLumi,4,kBlack,"#mu_{up}","L");
   setHistoStyle(h_LimitBayesianVsLumi,5,kBlue,"#mu_{up}","L");
 
-  int Nexp=1e6;
-  //int Nexp=1e4;
-
   for(float lumi=lumii; lumi<lumif; lumi+=1) {
     cout << endl << "-----------------------------------------------" << endl;
     cout << "-> Processing lumi = " << lumi << endl;
@@ -102,35 +98,35 @@ void SingleChannelWithUncertaintiesOnBkg(bool withUncertainties=true, const int 
       fileName+="ForComparison";
     fileName+="WithUncertaintiesOnBkg_"; 
     fileName+=lumi; fileName+=".dat";
-    float Nbkg2=100*lumi;
-    float Nsig2=5*lumi;
-    float Nobs2=90*lumi;
-    createASCIIFile(withUncertainties,fileName,Nbkg2,Nsig2,Nobs2);
+    float Nbkg2=100;
+    float Nsig2=5;
+    float Nobs2=90;
+    createASCIIFile(withUncertainties,fileName,Nbkg2,Nsig2,Nobs2,lumi);
     double limit_OTH=0;
     double limit_bayesianMCMC=0;
     if(1==config) {
       limit_OTH = computeObserved(Nexp,OpTHyLiC::expo,OpTHyLiC::normal,fileName.Data());
-      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),1,model::Model::normal);
+      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),1,model::Model::normal,Niter);
     }
     else if(2==config) {
       limit_OTH = computeObserved(Nexp,OpTHyLiC::expo,OpTHyLiC::logN,fileName.Data());
-      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),1,model::Model::logN);
+      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),1,model::Model::logN,Niter);
     }
     else if(3==config) {
       limit_OTH = computeObserved(Nexp,OpTHyLiC::linear,OpTHyLiC::normal,fileName.Data());
-      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),0,model::Model::normal);
+      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),0,model::Model::normal,Niter);
     }
     else if(4==config) {
       limit_OTH = computeObserved(Nexp,OpTHyLiC::linear,OpTHyLiC::logN,fileName.Data());
-      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),0,model::Model::logN);
+      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),0,model::Model::logN,Niter);
     }
     else if(5==config) {
       limit_OTH = computeObserved(Nexp,OpTHyLiC::polyexpo,OpTHyLiC::normal,fileName.Data());
-      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),4,model::Model::normal);
+      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),4,model::Model::normal,Niter);
     }
     else if(6==config) {
       limit_OTH = computeObserved(Nexp,OpTHyLiC::polyexpo,OpTHyLiC::logN,fileName.Data());
-      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),4,model::Model::logN);
+      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),4,model::Model::logN,Niter);
     }
     else {
       cout << "ERROR! config unknown" << endl;
@@ -152,6 +148,7 @@ void SingleChannelWithUncertaintiesOnBkg(bool withUncertainties=true, const int 
   pPad1->cd();
   if(withUncertainties) {
     h_LimitOTHVsLumi->GetYaxis()->SetRangeUser(5.35,8.8);
+    //h_LimitOTHVsLumi->GetYaxis()->SetRangeUser(7,8.6);
   }
   else {
     h_LimitOTHVsLumi->GetYaxis()->SetRangeUser(.3,3.3);

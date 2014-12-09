@@ -19,7 +19,7 @@ void createASCIIFile(const TString fileName, const float Nbkg, const float Nsig,
 
 double computeObservedLocal(const int Nexp, const TString& fileName, const unsigned int N=1) 
 {
-  OpTHyLiC oth(OpTHyLiC::mclimit,OpTHyLiC::normal);
+  OpTHyLiC oth(OTH::mclimit,OTH::normal);
   for(unsigned int i=0; i<N; ++i) {
     TString chName("channel_"); chName+=i;
     oth.addChannel(chName.Data(),fileName.Data());

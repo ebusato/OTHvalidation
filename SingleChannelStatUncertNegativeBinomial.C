@@ -51,7 +51,7 @@ void makePlot(RooPlot* frame, RooRealVar& n, const int Nbkg, const float NbkgUnc
 {
   int Nexp=1e6;
 
-  OpTHyLiC* oth = new OpTHyLiC(OpTHyLiC::mclimit,OpTHyLiC::gamma);
+  OpTHyLiC* oth = new OpTHyLiC(OTH::mclimit,OTH::gammaInv);
   createASCIIFile(fileName.c_str(),Nbkg,NbkgUncert,15,15);
   oth->addChannel("ch1",fileName.c_str());
   double cls;

@@ -18,7 +18,7 @@ Result* runLimit(const int type,
   TStopwatch w;
   w.Start();
 
-  OpTHyLiC oth(OpTHyLiC::mclimit,OpTHyLiC::normal);
+  OpTHyLiC oth(OTH::mclimit,OTH::normal);
 
   oth.addChannel("ch1",file1);
   oth.addChannel("ch2",file2);
@@ -58,8 +58,6 @@ void ComparisonWithMcLimit_SgluonPartialStat(TString outputFileName)
   TStopwatch w;
   w.Start();
 
-  //const int interpExtrap=OpTHyLiC::mclimit;
-  //const int statConstraint=OpTHyLiC::normal;
   const int nbExp=5e4;
 
   // Expected minus 2 sigma

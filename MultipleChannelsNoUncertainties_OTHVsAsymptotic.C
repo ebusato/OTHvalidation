@@ -132,7 +132,7 @@ void MultipleChannelsNoUncertainties_OTHVsAsymptotic()
     createASCIIFile(fileName3,Nsig3,Nbkg3,Nobs3,lumi);
 
     double limitAsymptoticWoUncert = computeAsymptoticWoUncert(lumi,Nsig1,Nbkg1,Nobs1,Nsig2,Nbkg2,Nobs2,Nsig3,Nbkg3,Nobs3);
-    double limitOTH = computeObserved(1e6,OpTHyLiC::mclimit,OpTHyLiC::normal,fileName1.Data(),fileName2.Data(),fileName3.Data());
+    double limitOTH = computeObserved(1e6,OTH::mclimit,OTH::normal,fileName1.Data(),fileName2.Data(),fileName3.Data());
     
     h_LimitAsymptoticWoUncertVsLumi->Fill(lumi,limitAsymptoticWoUncert);
     h_LimitOTHVsLumi->Fill(lumi,limitOTH);

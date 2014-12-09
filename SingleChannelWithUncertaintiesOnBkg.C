@@ -105,27 +105,27 @@ void SingleChannelWithUncertaintiesOnBkg(bool withUncertainties=true, const int 
     double limit_OTH=0;
     double limit_bayesianMCMC=0;
     if(1==config) {
-      limit_OTH = computeObserved(Nexp,OpTHyLiC::expo,OpTHyLiC::normal,fileName.Data());
+      limit_OTH = computeObserved(Nexp,OTH::expo,OTH::normal,fileName.Data());
       limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),1,model::Model::normal,Niter);
     }
     else if(2==config) {
-      limit_OTH = computeObserved(Nexp,OpTHyLiC::expo,OpTHyLiC::logN,fileName.Data());
+      limit_OTH = computeObserved(Nexp,OTH::expo,OTH::logN,fileName.Data());
       limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),1,model::Model::logN,Niter);
     }
     else if(3==config) {
-      limit_OTH = computeObserved(Nexp,OpTHyLiC::linear,OpTHyLiC::normal,fileName.Data());
+      limit_OTH = computeObserved(Nexp,OTH::linear,OTH::normal,fileName.Data());
       limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),0,model::Model::normal,Niter);
     }
     else if(4==config) {
-      limit_OTH = computeObserved(Nexp,OpTHyLiC::linear,OpTHyLiC::logN,fileName.Data());
+      limit_OTH = computeObserved(Nexp,OTH::linear,OTH::logN,fileName.Data());
       limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),0,model::Model::logN,Niter);
     }
     else if(5==config) {
-      limit_OTH = computeObserved(Nexp,OpTHyLiC::polyexpo,OpTHyLiC::normal,fileName.Data());
+      limit_OTH = computeObserved(Nexp,OTH::polyexpo,OTH::normal,fileName.Data());
       limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),4,model::Model::normal,Niter);
     }
     else if(6==config) {
-      limit_OTH = computeObserved(Nexp,OpTHyLiC::polyexpo,OpTHyLiC::logN,fileName.Data());
+      limit_OTH = computeObserved(Nexp,OTH::polyexpo,OTH::logN,fileName.Data());
       limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),4,model::Model::logN,Niter);
     }
     else {

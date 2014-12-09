@@ -46,7 +46,7 @@ void SingleChannelNoUncertainties()
     float Nsig=2.49*lumi;
     float Nobs=1*lumi;
     createASCIIFile(fileName,Nbkg,Nsig,Nobs);
-    double limit = computeObserved(1e6,OpTHyLiC::mclimit,OpTHyLiC::normal,fileName.Data());
+    double limit = computeObserved(1e6,OTH::mclimit,OTH::normal,fileName.Data());
     double limit_theoPoisson = theoPoisson(Nbkg,Nsig,Nobs);
     h_LimitVsLumi->Fill(lumi,limit);
     h_LimitTheoPoissonVsLumi->Fill(lumi,limit_theoPoisson);

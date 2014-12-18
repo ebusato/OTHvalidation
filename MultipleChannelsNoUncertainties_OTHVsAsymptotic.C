@@ -70,7 +70,8 @@ double asymptoticWoUncertCalcCLs(double mu,double lumi,
   return CLsb/CLb;
 }
 
-double computeAsymptoticWoUncert(double lumi, 
+double computeAsymptoticWoUncert(const double confLevel,
+				 double lumi, 
 				 const float Nsig1, const float Nbkg1, const float Nobs1,
 				 const float Nsig2, const float Nbkg2, const float Nobs2,
 				 const float Nsig3, const float Nbkg3, const float Nobs3)
@@ -80,18 +81,18 @@ double computeAsymptoticWoUncert(double lumi,
   double precision = 0.000001;
   double CLs=0;
 
-  while (fabs(CLs-0.05)>precision && (a+b)/2.>0.000000001) {
+  while (fabs(CLs-(1-confLevel))>precision && (a+b)/2.>0.000000001) {
     double mu=(a+b)/ 2.;
     CLs=asymptoticWoUncertCalcCLs(mu,lumi,Nsig1,Nbkg1,Nobs1,Nsig2,Nbkg2,Nobs2,Nsig3,Nbkg3,Nobs3);
     //std::cout<<a<<"   "<<b<<"   "<<mu<<"  "<<CLs<<std::endl;
-    if(CLs > 0.05) a = mu;
+    if(CLs > (1-confLevel)) a = mu;
     else b = mu;
   }
   
   return mu;
 }
 
-void MultipleChannelsNoUncertainties_OTHVsAsymptotic()
+void MultipleChannelsNoUncertainties_OTHVsAsymptotic(const double confLevel=0.95)
 {
   setStyle();
   gSystem->Load("OpTHyLiC_C");
@@ -131,8 +132,8 @@ void MultipleChannelsNoUncertainties_OTHVsAsymptotic()
     TString fileName3("dat/MultipleChannelsNoUncertainties_OTHVsAsymptoticCh3_"); fileName3+=lumi; fileName3+=".dat";
     createASCIIFile(fileName3,Nsig3,Nbkg3,Nobs3,lumi);
 
-    double limitAsymptoticWoUncert = computeAsymptoticWoUncert(lumi,Nsig1,Nbkg1,Nobs1,Nsig2,Nbkg2,Nobs2,Nsig3,Nbkg3,Nobs3);
-    double limitOTH = computeObserved(1e6,OTH::mclimit,OTH::normal,fileName1.Data(),fileName2.Data(),fileName3.Data());
+    double limitAsymptoticWoUncert = computeAsymptoticWoUncert(confLevel,lumi,Nsig1,Nbkg1,Nobs1,Nsig2,Nbkg2,Nobs2,Nsig3,Nbkg3,Nobs3);
+    double limitOTH = computeObserved(confLevel,1e6,OTH::mclimit,OTH::normal,fileName1.Data(),fileName2.Data(),fileName3.Data());
     
     h_LimitAsymptoticWoUncertVsLumi->Fill(lumi,limitAsymptoticWoUncert);
     h_LimitOTHVsLumi->Fill(lumi,limitOTH);

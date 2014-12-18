@@ -49,7 +49,7 @@ void createASCIIFile(const bool withUncertainties, const TString filename, const
   myfile.close();
 }
 
-double computeObservedBayesianMCMC(const std::string& file, const int interpExtrap, const int statConstraint, const int Niter) 
+double computeObservedBayesianMCMC(const double confLevel, const std::string& file, const int interpExtrap, const int statConstraint, const int Niter) 
 {
   // interp/extrap : 0 -> linear, 1 -> expo, 4 -> poly/expo
   model::Model model(statConstraint,interpExtrap);
@@ -58,12 +58,13 @@ double computeObservedBayesianMCMC(const std::string& file, const int interpExtr
   RooWorkspace* w = model.getWorkspace();
   BayesianMCMC bay(w);
   bay.setNumIters(Niter);
+  bay.setConfLevel(confLevel);
   double limit = bay.computeLimit();
   bay.printInterval();
   return limit;
 }
 
-void SingleChannelWithUncertaintiesOnBkg(bool withUncertainties=true, const int config=1, const int finallumi=8, const int Nexp=1e6, const int Niter=1e7)
+void SingleChannelWithUncertaintiesOnBkg(const double confLevel=0.95, bool withUncertainties=true, const int config=1, const int finallumi=8, const int Nexp=1e6, const int Niter=1e7)
 {
   /////////////////////////////////////////////////////////////////////////////////////
   // Meaning of config parameter:
@@ -105,28 +106,28 @@ void SingleChannelWithUncertaintiesOnBkg(bool withUncertainties=true, const int 
     double limit_OTH=0;
     double limit_bayesianMCMC=0;
     if(1==config) {
-      limit_OTH = computeObserved(Nexp,OTH::expo,OTH::normal,fileName.Data());
-      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),1,model::Model::normal,Niter);
+      limit_OTH = computeObserved(confLevel,Nexp,OTH::expo,OTH::normal,fileName.Data());
+      limit_bayesianMCMC = computeObservedBayesianMCMC(confLevel,fileName.Data(),1,model::Model::normal,Niter);
     }
     else if(2==config) {
-      limit_OTH = computeObserved(Nexp,OTH::expo,OTH::logN,fileName.Data());
-      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),1,model::Model::logN,Niter);
+      limit_OTH = computeObserved(confLevel,Nexp,OTH::expo,OTH::logN,fileName.Data());
+      limit_bayesianMCMC = computeObservedBayesianMCMC(confLevel,fileName.Data(),1,model::Model::logN,Niter);
     }
     else if(3==config) {
-      limit_OTH = computeObserved(Nexp,OTH::linear,OTH::normal,fileName.Data());
-      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),0,model::Model::normal,Niter);
+      limit_OTH = computeObserved(confLevel,Nexp,OTH::linear,OTH::normal,fileName.Data());
+      limit_bayesianMCMC = computeObservedBayesianMCMC(confLevel,fileName.Data(),0,model::Model::normal,Niter);
     }
     else if(4==config) {
-      limit_OTH = computeObserved(Nexp,OTH::linear,OTH::logN,fileName.Data());
-      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),0,model::Model::logN,Niter);
+      limit_OTH = computeObserved(confLevel,Nexp,OTH::linear,OTH::logN,fileName.Data());
+      limit_bayesianMCMC = computeObservedBayesianMCMC(confLevel,fileName.Data(),0,model::Model::logN,Niter);
     }
     else if(5==config) {
-      limit_OTH = computeObserved(Nexp,OTH::polyexpo,OTH::normal,fileName.Data());
-      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),4,model::Model::normal,Niter);
+      limit_OTH = computeObserved(confLevel,Nexp,OTH::polyexpo,OTH::normal,fileName.Data());
+      limit_bayesianMCMC = computeObservedBayesianMCMC(confLevel,fileName.Data(),4,model::Model::normal,Niter);
     }
     else if(6==config) {
-      limit_OTH = computeObserved(Nexp,OTH::polyexpo,OTH::logN,fileName.Data());
-      limit_bayesianMCMC = computeObservedBayesianMCMC(fileName.Data(),4,model::Model::logN,Niter);
+      limit_OTH = computeObserved(confLevel,Nexp,OTH::polyexpo,OTH::logN,fileName.Data());
+      limit_bayesianMCMC = computeObservedBayesianMCMC(confLevel,fileName.Data(),4,model::Model::logN,Niter);
     }
     else {
       cout << "ERROR! config unknown" << endl;

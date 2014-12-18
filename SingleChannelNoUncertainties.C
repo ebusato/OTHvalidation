@@ -17,12 +17,12 @@ void createASCIIFile(const TString filename, const float Nbkg, const float Nsig,
   myfile.close();
 }
 
-double theoPoisson(const float Nbkg, const float Nsig, const float Nobs)
+double theoPoisson(const float Nbkg, const float Nsig, const float Nobs, const double confLevel)
 {
-  return (0.5*ROOT::Math::chisquared_quantile(1-0.05*(1-ROOT::Math::chisquared_cdf(2*Nbkg,2*(Nobs+1))),2*(Nobs+1))-Nbkg)/Nsig;
+  return (0.5*ROOT::Math::chisquared_quantile(1-(1-confLevel)*(1-ROOT::Math::chisquared_cdf(2*Nbkg,2*(Nobs+1))),2*(Nobs+1))-Nbkg)/Nsig;
 }
 
-void SingleChannelNoUncertainties()
+void SingleChannelNoUncertainties(const double confLevel=0.95)
 {
   setStyle();
   gSystem->Load("OpTHyLiC_C");
@@ -46,8 +46,8 @@ void SingleChannelNoUncertainties()
     float Nsig=2.49*lumi;
     float Nobs=1*lumi;
     createASCIIFile(fileName,Nbkg,Nsig,Nobs);
-    double limit = computeObserved(1e6,OTH::mclimit,OTH::normal,fileName.Data());
-    double limit_theoPoisson = theoPoisson(Nbkg,Nsig,Nobs);
+    double limit = computeObserved(confLevel,1e6,OTH::mclimit,OTH::normal,fileName.Data());
+    double limit_theoPoisson = theoPoisson(Nbkg,Nsig,Nobs,confLevel);
     h_LimitVsLumi->Fill(lumi,limit);
     h_LimitTheoPoissonVsLumi->Fill(lumi,limit_theoPoisson);
   }

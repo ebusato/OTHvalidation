@@ -17,9 +17,10 @@ void createASCIIFile(const TString fileName, const float Nbkg, const float Nsig,
   myfile.close();
 }
 
-double computeObservedLocal(const int Nexp, const TString& fileName, const unsigned int N=1) 
+double computeObservedLocal(const double confLevel, const int Nexp, const TString& fileName, const unsigned int N=1) 
 {
   OpTHyLiC oth(OTH::mclimit,OTH::normal);
+  oth.setConfLevel(confLevel);
   for(unsigned int i=0; i<N; ++i) {
     TString chName("channel_"); chName+=i;
     oth.addChannel(chName.Data(),fileName.Data());
@@ -30,7 +31,7 @@ double computeObservedLocal(const int Nexp, const TString& fileName, const unsig
 }
 
 
-void MultipleChannelsNoUncertainties_NoChannelsVsLumi()
+void MultipleChannelsNoUncertainties_NoChannelsVsLumi(const double confLevel=0.95)
 {
   setStyle();
   gSystem->Load("OpTHyLiC_C");
@@ -64,8 +65,8 @@ void MultipleChannelsNoUncertainties_NoChannelsVsLumi()
     if(1==lumi) 
       fileNameFirst=fileName;
     
-    double limit_Lumi = computeObservedLocal(1e6,fileName);
-    double limit_NoChannels = computeObservedLocal(1e6,fileNameFirst,lumi);
+    double limit_Lumi = computeObservedLocal(confLevel,1e6,fileName);
+    double limit_NoChannels = computeObservedLocal(confLevel,1e6,fileNameFirst,lumi);
     
     h_LimitLumi->Fill(lumi,limit_Lumi);
     h_LimitNoChannels->Fill(lumi,limit_NoChannels);

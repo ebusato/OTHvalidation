@@ -57,7 +57,7 @@ double computeObserved(const double confLevel, const int Nexp, const int interpE
   oth.setConfLevel(confLevel);
 
   double cls;
-  double obs = oth.observedSigStrengthFor95excl(Nexp,cls);
+  double obs = oth.observedSigStrengthExclusion(Nexp,cls);
   return obs;
 }
 

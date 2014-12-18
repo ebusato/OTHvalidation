@@ -51,11 +51,11 @@ void makePlot(RooPlot* frame, RooRealVar& n, const int Nbkg, const float NbkgUnc
 {
   int Nexp=1e6;
 
-  OpTHyLiC* oth = new OpTHyLiC(OTH::mclimit,OTH::gammaInv);
+  OpTHyLiC* oth = new OpTHyLiC(OTH::mclimit,OTH::gammaHyper);
   createASCIIFile(fileName.c_str(),Nbkg,NbkgUncert,15,15);
   oth->addChannel("ch1",fileName.c_str());
   double cls;
-  oth->observedSigStrengthFor95excl(Nexp,cls);
+  oth->observedSigStrengthExclusion(Nexp,cls);
 
   TH1* hDistrBg = oth->getHisto(0,OTH::Channel::hDistrBg);
   TH1* hDistrBgShifted = ShiftHisto(hDistrBg);

@@ -43,7 +43,7 @@ mkdir dat
 root -l -b -q 'SingleChannelNoUncertainties.C(0.95)'
 root -l -b -q 'MultipleChannelsNoUncertainties_OTHVsAsymptotic.C(0.95)'
 root -l -b -q 'MultipleChannelsNoUncertainties_NoChannelsVsLumi.C(0.95)'
-root -l -b -q 'SingleChannelStatUncertNegativeBinomial.C(0.95)'
+root -l -b -q SingleChannelStatUncertNegativeBinomial.C
 root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(0.95,0)'
 root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(0.95,1,6,8,1e6,1e7)'
 root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(0.95,1,1,8,1e6,1e7)'

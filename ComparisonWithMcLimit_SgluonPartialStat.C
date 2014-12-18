@@ -27,17 +27,17 @@ Result* runLimit(const int type,
   double cls;
   double limit=0;
   if(type==expM2)
-    limit=oth.expectedM2sigStrengthFor95excl(nbExp,cls);
+    limit=oth.expectedM2sigStrengthExclusion(nbExp,cls);
   else if(type==expM1)
-    limit=oth.expectedM1sigStrengthFor95excl(nbExp,cls);
+    limit=oth.expectedM1sigStrengthExclusion(nbExp,cls);
   else if(type==expMed)
-    limit=oth.expectedMedSigStrengthFor95excl(nbExp,cls);
+    limit=oth.expectedMedSigStrengthExclusion(nbExp,cls);
   else if(type==expP1)
-    limit=oth.expectedP1sigStrengthFor95excl(nbExp,cls);
+    limit=oth.expectedP1sigStrengthExclusion(nbExp,cls);
   else if(type==expP2)
-    limit=oth.expectedP2sigStrengthFor95excl(nbExp,cls);
+    limit=oth.expectedP2sigStrengthExclusion(nbExp,cls);
   else if(type==obs)
-    limit=oth.observedSigStrengthFor95excl(nbExp,cls);
+    limit=oth.observedSigStrengthExclusion(nbExp,cls);
   w.Stop(); 
   
   cout << "Result:" << endl;

@@ -26,7 +26,7 @@ double computeObservedLocal(const double confLevel, const int Nexp, const TStrin
     oth.addChannel(chName.Data(),fileName.Data());
   }
   double cls;
-  double limit = oth.observedSigStrengthFor95excl(Nexp,cls);
+  double limit = oth.observedSigStrengthExclusion(Nexp,cls);
   return limit;
 }
 

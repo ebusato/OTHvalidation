@@ -43,9 +43,9 @@ mkdir results
 mkdir dat
 
 ## Comparisons with theory and bayesian with uniform prior
-#root -l -b -q load.C 'SingleChannelNoUncertainties.C(0.95)'
-#root -l -b -q load.C 'MultipleChannelsNoUncertainties_OTHVsAsymptotic.C(0.95)'
-#root -l -b -q load.C 'MultipleChannelsNoUncertainties_NoChannelsVsLumi.C(0.95)'
+root -l -b -q load.C 'SingleChannelNoUncertainties.C(0.95)'
+root -l -b -q load.C 'MultipleChannelsNoUncertainties_OTHVsAsymptotic.C(0.95)'
+root -l -b -q load.C 'MultipleChannelsNoUncertainties_NoChannelsVsLumi.C(0.95)'
 root -l -b -q load.C SingleChannelStatUncertNegativeBinomial.C
 #root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(0.95,0)'
 #root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(0.95,1,6,8,1e6,1e7)'
@@ -53,18 +53,20 @@ root -l -b -q load.C SingleChannelStatUncertNegativeBinomial.C
 #root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(0.95,1,4,8,1e6,1e7)'
 
 ## Comparison with McLimit for full plot
-#root -l -b <<EOF
-#.L ComparisonWithMcLimit_SgluonPartialStat.C
-#ComparisonWithMcLimit_SgluonPartialStat("results/SgluonPartialStat.txt")
-#makeExclusionPlot("results/SgluonPartialStat.txt","datComparisonWithMcLimit_Sgl#uonPartialStat/McLimitsResultsFromLoic.txt")
-#EOF
+root -l -b <<EOF
+.L load.C
+gSystem->Load("ExclusionPlot_C");
+.L ComparisonWithMcLimit_SgluonPartialStat.C
+ComparisonWithMcLimit_SgluonPartialStat("results/SgluonPartialStat.txt")
+makeExclusionPlot("results/SgluonPartialStat.txt","datComparisonWithMcLimit_SgluonPartialStat/McLimitsResultsFromLoic.txt")
+EOF
 
 # Merge all results into a single file
-#rm -f results/merged.pdf
-#gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=results/merged.pdf results/*.pdf
+rm -f results/merged.pdf
+gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=results/merged.pdf results/*.pdf
 
-#mv results results_95CL
-#mv dat dat_95CL
+mv results results_95CL
+mv dat dat_95CL
 
 ################################################################################
 ##
@@ -72,21 +74,21 @@ root -l -b -q load.C SingleChannelStatUncertNegativeBinomial.C
 ##
 ################################################################################
 
-#mkdir results
-#mkdir dat
+mkdir results
+mkdir dat
 
 # Comparisons with theory and bayesian with uniform prior
-#root -l -b -q 'SingleChannelNoUncertainties.C(0.9)'
-#root -l -b -q 'MultipleChannelsNoUncertainties_OTHVsAsymptotic.C(0.9)'
-#root -l -b -q 'MultipleChannelsNoUncertainties_NoChannelsVsLumi.C(0.9)'
+root -l -b -q load.C 'SingleChannelNoUncertainties.C(0.9)'
+root -l -b -q load.C 'MultipleChannelsNoUncertainties_OTHVsAsymptotic.C(0.9)'
+root -l -b -q load.C 'MultipleChannelsNoUncertainties_NoChannelsVsLumi.C(0.9)'
 #root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(0.9,0)'
 #root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(0.9,1,6,8,1e6,1e7)'
 #root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(0.9,1,1,8,1e6,1e7)'
 #root -l -b -q 'SingleChannelWithUncertaintiesOnBkg.C(0.9,1,4,8,1e6,1e7)'
 
 # Merge all results into a single file
-#rm -f results/merged.pdf
-#gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=results/merged.pdf results/*.pdf
+rm -f results/merged.pdf
+gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=results/merged.pdf results/*.pdf
 
-#mv results results_90CL
-#mv dat dat_90CL
+mv results results_90CL
+mv dat dat_90CL

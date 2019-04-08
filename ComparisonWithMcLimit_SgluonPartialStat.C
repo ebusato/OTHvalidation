@@ -18,7 +18,7 @@ Result* runLimit(const int type,
   TStopwatch w;
   w.Start();
 
-  OpTHyLiC oth(OTH::mclimit,OTH::normal);
+  OpTHyLiC oth(OTH::SystMclimit,OTH::StatNormal);
 
   oth.addChannel("ch1",file1);
   oth.addChannel("ch2",file2);
@@ -27,17 +27,17 @@ Result* runLimit(const int type,
   double cls;
   double limit=0;
   if(type==expM2)
-    limit=oth.expectedM2sigStrengthExclusion(nbExp,cls);
+    limit=oth.sigStrengthExclusion(OTH::LimExpectedM2sig,nbExp,cls);
   else if(type==expM1)
-    limit=oth.expectedM1sigStrengthExclusion(nbExp,cls);
+    limit=oth.sigStrengthExclusion(OTH::LimExpectedM1sig,nbExp,cls);
   else if(type==expMed)
-    limit=oth.expectedMedSigStrengthExclusion(nbExp,cls);
+    limit=oth.sigStrengthExclusion(OTH::LimExpectedMed,nbExp,cls);
   else if(type==expP1)
-    limit=oth.expectedP1sigStrengthExclusion(nbExp,cls);
+    limit=oth.sigStrengthExclusion(OTH::LimExpectedP1sig,nbExp,cls);
   else if(type==expP2)
-    limit=oth.expectedP2sigStrengthExclusion(nbExp,cls);
+    limit=oth.sigStrengthExclusion(OTH::LimExpectedP2sig,nbExp,cls);
   else if(type==obs)
-    limit=oth.observedSigStrengthExclusion(nbExp,cls);
+    limit=oth.sigStrengthExclusion(OTH::LimObserved,nbExp,cls);
   w.Stop(); 
   
   cout << "Result:" << endl;

@@ -8,7 +8,7 @@
 #include "AtlasUtils.C"
 #include "Utils.C"
 
-void createASCIIFile(const TString filename, const float Nsig, const float Nbkg, const int Nobs, const float lumi)
+void createASCIIFile(const TString filename, float Nsig, float Nbkg, int Nobs, const float lumi)
 {
   Nbkg*=lumi;
   Nsig*=lumi;
@@ -80,9 +80,9 @@ double computeAsymptoticWoUncert(const double confLevel,
   double b = 200.;
   double precision = 0.000001;
   double CLs=0;
-
+  double mu=0;
   while (fabs(CLs-(1-confLevel))>precision && (a+b)/2.>0.000000001) {
-    double mu=(a+b)/ 2.;
+    mu=(a+b)/ 2.;
     CLs=asymptoticWoUncertCalcCLs(mu,lumi,Nsig1,Nbkg1,Nobs1,Nsig2,Nbkg2,Nobs2,Nsig3,Nbkg3,Nobs3);
     //std::cout<<a<<"   "<<b<<"   "<<mu<<"  "<<CLs<<std::endl;
     if(CLs > (1-confLevel)) a = mu;
@@ -133,7 +133,7 @@ void MultipleChannelsNoUncertainties_OTHVsAsymptotic(const double confLevel=0.95
     createASCIIFile(fileName3,Nsig3,Nbkg3,Nobs3,lumi);
 
     double limitAsymptoticWoUncert = computeAsymptoticWoUncert(confLevel,lumi,Nsig1,Nbkg1,Nobs1,Nsig2,Nbkg2,Nobs2,Nsig3,Nbkg3,Nobs3);
-    double limitOTH = computeObserved(confLevel,1e6,OTH::mclimit,OTH::normal,fileName1.Data(),fileName2.Data(),fileName3.Data());
+    double limitOTH = computeObserved(confLevel,1e6,OTH::SystMclimit,OTH::StatNormal,fileName1.Data(),fileName2.Data(),fileName3.Data());
     
     h_LimitAsymptoticWoUncertVsLumi->Fill(lumi,limitAsymptoticWoUncert);
     h_LimitOTHVsLumi->Fill(lumi,limitOTH);
@@ -149,8 +149,8 @@ void MultipleChannelsNoUncertainties_OTHVsAsymptotic(const double confLevel=0.95
   pPad2->Draw();
   pPad1->cd();
   h_LimitOTHVsLumi->GetYaxis()->SetRangeUser(0.15,0.88);
-  h_LimitOTHVsLumi->Draw("p");
-  h_LimitAsymptoticWoUncertVsLumi->Draw("psame");
+  h_LimitOTHVsLumi->Draw("phist");
+  h_LimitAsymptoticWoUncertVsLumi->Draw("phistsame");
   TLegend* leg1 = new TLegend(0.6157718,0.6927803,0.9194631,0.8924731);
   leg1->SetFillColor(kWhite);
   leg1->SetLineColor(kBlack);
@@ -161,7 +161,7 @@ void MultipleChannelsNoUncertainties_OTHVsAsymptotic(const double confLevel=0.95
   pPad2->cd();
   TH1* hratio = makeRatio(h_LimitAsymptoticWoUncertVsLumi,h_LimitOTHVsLumi,"hratio","ratio");
   hratio->GetYaxis()->SetRangeUser(0.96,1.07);
-  hratio->Draw("p");
+  hratio->Draw("phist");
   system("rm -f results/MultipleChannelsNoUncertainties_OTHVsAsymptotic.*");
   c->SaveAs("results/MultipleChannelsNoUncertainties_OTHVsAsymptotic.png");
   c->SaveAs("results/MultipleChannelsNoUncertainties_OTHVsAsymptotic.C");

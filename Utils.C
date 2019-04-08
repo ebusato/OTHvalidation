@@ -43,7 +43,7 @@ TH1* makeRatio(const TH1* h1, const TH1* h2, const TString name, const TString Y
   return h_ratio;
 }
 
-double computeObserved(const double confLevel, const int Nexp, const int interpExtrap, const int statConstraint, const std::string& file1, const std::string& file2="", const std::string& file3="")
+double computeObserved(const double confLevel, const int Nexp, const SystType interpExtrap, const StatType statConstraint, const std::string& file1, const std::string& file2="", const std::string& file3="")
 {
   OpTHyLiC oth(interpExtrap,statConstraint);
   oth.addChannel("ch1",file1);
@@ -57,7 +57,7 @@ double computeObserved(const double confLevel, const int Nexp, const int interpE
   oth.setConfLevel(confLevel);
 
   double cls;
-  double obs = oth.observedSigStrengthExclusion(Nexp,cls);
+  double obs = oth.sigStrengthExclusion(OTH::LimObserved,Nexp,cls);
   return obs;
 }
 

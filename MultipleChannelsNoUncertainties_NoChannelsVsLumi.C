@@ -19,14 +19,14 @@ void createASCIIFile(const TString fileName, const float Nbkg, const float Nsig,
 
 double computeObservedLocal(const double confLevel, const int Nexp, const TString& fileName, const unsigned int N=1) 
 {
-  OpTHyLiC oth(OTH::mclimit,OTH::normal);
+  OpTHyLiC oth(OTH::SystMclimit,OTH::StatNormal);
   oth.setConfLevel(confLevel);
   for(unsigned int i=0; i<N; ++i) {
     TString chName("channel_"); chName+=i;
     oth.addChannel(chName.Data(),fileName.Data());
   }
   double cls;
-  double limit = oth.observedSigStrengthExclusion(Nexp,cls);
+  double limit = oth.sigStrengthExclusion(OTH::LimObserved,Nexp,cls);
   return limit;
 }
 
@@ -82,8 +82,8 @@ void MultipleChannelsNoUncertainties_NoChannelsVsLumi(const double confLevel=0.9
   pPad2->Draw();
   pPad1->cd();
   h_LimitLumi->GetYaxis()->SetRangeUser(0.1,1.8);
-  h_LimitLumi->Draw("p");
-  h_LimitNoChannels->Draw("psame");
+  h_LimitLumi->Draw("phist");
+  h_LimitNoChannels->Draw("phistsame");
   TLegend* leg1 = new TLegend(0.6,0.6,0.92,0.89);
   leg1->SetFillColor(kWhite);
   leg1->SetLineColor(kBlack);
@@ -94,7 +94,7 @@ void MultipleChannelsNoUncertainties_NoChannelsVsLumi(const double confLevel=0.9
   pPad2->cd();
   TH1* hratio = makeRatio(h_LimitNoChannels,h_LimitLumi,"hratio","ratio");
   hratio->GetYaxis()->SetRangeUser(0.98,1.025);
-  hratio->Draw("p");
+  hratio->Draw("phist");
   system("rm -f results/MultipleChannelsNoUncertainties_NoChannelsVsLumi.*");
   c->SaveAs("results/MultipleChannelsNoUncertainties_NoChannelsVsLumi.png");
   c->SaveAs("results/MultipleChannelsNoUncertainties_NoChannelsVsLumi.C");

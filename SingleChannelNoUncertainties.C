@@ -46,7 +46,7 @@ void SingleChannelNoUncertainties(const double confLevel=0.95)
     float Nsig=2.49*lumi;
     float Nobs=1*lumi;
     createASCIIFile(fileName,Nbkg,Nsig,Nobs);
-    double limit = computeObserved(confLevel,1e6,OTH::mclimit,OTH::normal,fileName.Data());
+    double limit = computeObserved(confLevel,1e6,OTH::SystMclimit,OTH::StatNormal,fileName.Data());
     double limit_theoPoisson = theoPoisson(Nbkg,Nsig,Nobs,confLevel);
     h_LimitVsLumi->Fill(lumi,limit);
     h_LimitTheoPoissonVsLumi->Fill(lumi,limit_theoPoisson);
@@ -62,8 +62,8 @@ void SingleChannelNoUncertainties(const double confLevel=0.95)
   pPad2bis->Draw();
   pPad1bis->cd();
   h_LimitVsLumi->GetYaxis()->SetRangeUser(0.1,1.85);
-  h_LimitVsLumi->Draw("p");
-  h_LimitTheoPoissonVsLumi->Draw("psame");
+  h_LimitVsLumi->Draw("phist");
+  h_LimitTheoPoissonVsLumi->Draw("phistsame");
   TLegend* leg1bis = new TLegend(0.6526846,0.7273425,0.9060403,0.9039939);
   leg1bis->SetFillColor(kWhite);
   leg1bis->SetLineColor(kBlack);
@@ -73,7 +73,7 @@ void SingleChannelNoUncertainties(const double confLevel=0.95)
   leg1bis->Draw();
   pPad2bis->cd();
   TH1* hratio = makeRatio(h_LimitTheoPoissonVsLumi,h_LimitVsLumi,"hratio","ratio");
-  hratio->Draw("p");
+  hratio->Draw("phist");
   hratio->GetYaxis()->SetRangeUser(0.975,1.025);
   system("rm -f results/SingleChannelNoUncertainties.*");
   c->SaveAs("results/SingleChannelNoUncertainties.png");
